@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Classroom;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -13,10 +14,12 @@ class studentcontroller extends Controller
     public function index()
     {
         $students = Student::with('classroom')->get();
+        $classrooms = Classroom::all();
 
         return view('admin.student', [
             'title' => 'Student',
             'students' => $students,
+            'classrooms' => $classrooms,
         ]);
     }
 
@@ -33,7 +36,16 @@ class studentcontroller extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required|string|max:100',
+            'nis' => 'required|string|max:10|unique:students,nis',
+            'classroom_id' => 'required|exists:classrooms,id',
+            'address' => 'nullable|string',
+        ]);
+
+        Student::create(array_merge($validated, ['is_active' => true]));
+
+        return redirect('/admin/student')->with('success', 'Data siswa berhasil ditambahkan!');
     }
 
     /**

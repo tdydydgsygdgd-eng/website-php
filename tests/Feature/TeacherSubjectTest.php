@@ -2,6 +2,7 @@
 
 use App\Models\Subject;
 use App\Models\Teacher;
+use Tests\TestCase;
 
 test('a teacher belongs to one subject and a subject has one teacher', function () {
     $subject = Subject::factory()->create(['name' => 'Pemrograman Web']);
@@ -17,6 +18,7 @@ test('a teacher belongs to one subject and a subject has one teacher', function 
 });
 
 test('admin teacher page retrieves and displays teacher and its subject', function () {
+    /** @var TestCase $this */
     $response = $this->get('/admin/teacher');
 
     $response->assertOk();
@@ -25,6 +27,7 @@ test('admin teacher page retrieves and displays teacher and its subject', functi
 });
 
 test('admin subject page retrieves and displays subject and its teacher', function () {
+    /** @var TestCase $this */
     $response = $this->get('/admin/subject');
 
     $response->assertOk();

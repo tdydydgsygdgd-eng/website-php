@@ -24,7 +24,8 @@ Route::get('/admin/dashboard', [dashboardcontroller::class, 'index']);
 
 Route::get('/admin/about', [aboutcontroller::class, 'index']);
 
-Route::get('/admin/student', [studentcontroller::class, 'index']);
+Route::get('/admin/student', [studentcontroller::class, 'index'])->name('admin.student.index');
+Route::post('/admin/student', [studentcontroller::class, 'store'])->name('admin.student.store');
 
 Route::get('/admin/classroom', [ClassroomController::class, 'index']);
 Route::get('/admin/classroom/{classroom}', [ClassroomController::class, 'show'])->name('admin.classroom.show');

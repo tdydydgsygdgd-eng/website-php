@@ -2,8 +2,10 @@
 
 use App\Models\Classroom;
 use App\Models\Student;
+use Tests\TestCase;
 
 test('admin student page retrieves and displays students from database', function () {
+    /** @var TestCase $this */
     $student = Student::first();
 
     $response = $this->get('/admin/student');
@@ -17,6 +19,7 @@ test('admin student page retrieves and displays students from database', functio
 });
 
 test('admin classroom page retrieves and displays classrooms from database', function () {
+    /** @var TestCase $this */
     $classroom = Classroom::first();
 
     $response = $this->get('/admin/classroom');
@@ -31,6 +34,7 @@ test('admin classroom page retrieves and displays classrooms from database', fun
 });
 
 test('admin classroom detail page displays classroom and its students', function () {
+    /** @var TestCase $this */
     $classroom = Classroom::first() ?? Classroom::factory()->has(Student::factory()->count(3))->create();
 
     $response = $this->get("/admin/classroom/{$classroom->id}");
@@ -44,4 +48,23 @@ test('admin classroom detail page displays classroom and its students', function
     if ($firstStudent = $classroom->students->first()) {
         $response->assertSee($firstStudent->nama);
     }
+});
+
+test('admin can create a new student via post request', function () {
+    /** @var TestCase $this */
+    $classroom = Classroom::first() ?? Classroom::factory()->create();
+
+    $response = $this->post('/admin/student', [
+        'nama' => 'Budi Pratama',
+        'nis' => '99988811',
+        'classroom_id' => $classroom->id,
+        'address' => 'Jl. Jenderal Sudirman No. 10',
+    ]);
+
+    $response->assertRedirect('/admin/student');
+    $this->assertDatabaseHas('students', [
+        'nama' => 'Budi Pratama',
+        'nis' => '99988811',
+        'classroom_id' => $classroom->id,
+    ]);
 });
